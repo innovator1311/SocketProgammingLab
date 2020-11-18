@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
+using namespace std;
 void error(const char *msg)
 {
     perror(msg);
@@ -48,34 +50,61 @@ int main(int argc, char *argv[])
     //    printf("Login successfully");
 
     // confirm success
+    printf("Enter your nickname: ");
+    bzero(buffer,256);
+    fgets(buffer,255,stdin);
+
+    n = write(sockfd, buffer, strlen(buffer));
+    if (n < 0) 
+        error("ERROR writing from socket");
+
     bzero(buffer,256);
     n = read(sockfd, buffer, 255);
     if (n < 0) 
         error("ERROR reading from socket");
-    printf("%s\n", buffer);
-    
-    
-    int exit = 1;
 
-    // enter the game
-    while (exit) {
+    char * tmp = (char*) malloc(strlen(buffer)+1);
+    strcpy(tmp, buffer);
+    while (strcmp(tmp, "fail")==0){
+        // received zero bytes means to be failed 
+        printf("Your nickname is not valid or has exist, re-enter your nickname pls\n");
+        printf("Enter your nickname again: ");
 
-        // receive question
-        bzero(buffer,256);
-        n = read(sockfd, buffer, 255);
-        if (n < 0) 
-            error("ERROR reading from socket");
-        printf("%s\n", buffer);
-
-        // send answer
-        printf("\n Enter your answers: ");
         bzero(buffer,256);
         fgets(buffer,255,stdin);
         n = write(sockfd, buffer, strlen(buffer));
         if (n < 0) 
-            error("ERROR writing to socket");
-        
+            error("ERROR writing from socket");
+        bzero(buffer,256);
+        n = read(sockfd, buffer, 255);
+        if (n < 0) 
+            error("ERROR reading from socket");
+        tmp = (char*) malloc(strlen(buffer)+1);
+        strcpy(tmp, buffer);
     }
+    printf("%s\n", buffer);
+        
+    int exit = 1;
+
+    // enter the game
+    // while (exit) {
+
+    //     // receive question
+    //     bzero(buffer,256);
+    //     n = read(sockfd, buffer, 255);
+    //     if (n < 0) 
+    //         error("ERROR reading from socket");
+    //     printf("%s\n", buffer);
+
+    //     // send answer
+    //     printf("\n Enter your nickname: ");
+    //     bzero(buffer,256);
+    //     fgets(buffer,255,stdin);
+    //     n = write(sockfd, buffer, strlen(buffer));
+    //     if (n < 0) 
+    //         error("ERROR writing to socket");
+        
+    // }
     close(sockfd);
     return 0;
 }
