@@ -4,6 +4,7 @@
 #include <string.h>
 #include <iostream>
 #include <set>
+#include <vector>
 #include <string>
 
 #include <unistd.h>
@@ -13,6 +14,11 @@
 #include <arpa/inet.h>
 
 using namespace std;
+
+struct Question{
+    string question;
+    char answer;
+};
 
 void error(const char *msg)
 {
@@ -28,6 +34,12 @@ bool checkExistPlayer(set<char *> list_player, char *check_name){
     }
     return exist;
 }
+
+vector<Question> getListQuestion(){
+    vector<Question> myQues;
+    return myQues;
+}
+
 int main(int argc, char *argv[])
 {
     int opt = 1;
@@ -104,7 +116,7 @@ int main(int argc, char *argv[])
     
     set<char *> list_player; // init list of players nickname
     int * clien_socket = new int[max_num_client]; // init list of players socket
-
+    string * client_name = new string[max_num_client];
     // init all socket to 0
     for(int i=0; i<max_num_client; i++){
         clien_socket[i] = 0;
@@ -113,6 +125,7 @@ int main(int argc, char *argv[])
     char *message = "ECHO Daemon v1.0 \r\n";
     bool exist;
     // Waiting for players to register
+    int num_client_to_start = 0;
     while(true)   
     {   
         //clear the socket set  
@@ -221,14 +234,155 @@ int main(int argc, char *argv[])
                         char * tmp = (char*) malloc(strlen(buffer)+1);
                         strcpy(tmp, buffer);
                         list_player.insert(tmp);
+                        client_name[i] = tmp;
                         send(sd, buffer, strlen(buffer), 0);
                         cur_num_client += 1;
+                        num_client_to_start += 1;
                     }
                 }   
             }   
         }   
+        if(num_client_to_start == max_num_client){
+            break;
+        }
     }   
-         
+    // Game started 
+
+    cout<<"Game started!"<<endl;
+    cout<<"List of player name:"<<endl;
+    for(int i=0; i<max_num_client; i++){
+        cout<<i+1<<"."<<client_name[i]<<endl;
+        // signal the player to start game, must wait until the client confirm 
+        send(clien_socket[i], "start game", 10, 0);
+        n = read(clien_socket[i], buffer, 255);
+        cout<<"Response from player "<<buffer<<endl;
+    }
+
+    // init game properties from server
+    int run_client_id = 0;
+    int run_question_id = 0;
+    bool isEndGame = false;
+    char *clientAnswer = (char*) malloc(strlen(buffer)+1);
+    char *respond;
+    vector<Question> allQues;
+    Question selectedQues;
+    
+    // /// insert demo question here
+    Question tmp;
+    char random_answer[4] = {'A', 'B', 'C', 'D'};
+    for(int i = 0; i<max_num_client*3; i++){
+        tmp.question = "question "+ to_string(i+1);
+        tmp.answer = random_answer[i%4];
+        allQues.push_back(tmp);
+    }
+    // Question ques1;
+    // ques1.question = "question 1";
+    // ques1.answer = 'A';
+
+    // Question ques2;
+    // ques2.question = "question 2";
+    // ques2.answer = 'B';
+
+    // Question ques3;
+    // ques3.question = "question 3";
+    // ques3.answer = 'C';
+
+    // allQues.push_back(ques1);
+    // allQues.push_back(ques2);
+    // allQues.push_back(ques3);
+    int total_ques = allQues.size();
+
+    /// init all users as alive and with only one turn 
+    int *numTurnClient;
+    numTurnClient = new int[max_num_client];
+    bool *isAlive;
+    isAlive = new bool[max_num_client];
+    int num_alive = max_num_client;
+    for(int i = 0;i <max_num_client;i++){
+        numTurnClient[i] = 1;
+        isAlive[i] = true;
+    }
+
+    while(!isEndGame){
+        /// getting the question from question id
+        selectedQues = allQues[run_question_id];
+        /// displaying it on screen
+        cout<<"Current question:"<<endl;
+        cout<<selectedQues.question<<endl;
+        cout<<"Solution:"<<selectedQues.answer<<endl;
+        /// select the player to send question via socket
+        bzero(buffer,256);
+        selectedQues.question.copy(buffer, selectedQues.question.size()+1); // copy to buffer 
+        buffer[selectedQues.question.size()] = '\0';//set the delimeter
+
+        send(clien_socket[run_client_id], buffer, strlen(buffer), 0);
+        /// waiting for client's answer
+        n = read(clien_socket[run_client_id], buffer, 255);
+
+        strtok(buffer, "\n");
+        strcpy(clientAnswer, buffer);
+        cout<<"Answer from player "<<client_name[run_client_id]<<" is "<<clientAnswer[0]<<endl;
+        bzero(buffer,256);
+        /// examine client's answer
+        if(num_alive == 1 || total_ques == 1){
+            // he/she is the last one survive or this is the last question
+            respond = "winner";
+            send(clien_socket[run_client_id], respond, strlen(respond), 0);
+            close(clien_socket[run_client_id]);
+            break; //end game
+        }
+        if(clientAnswer[0] == 'S'){
+            // first check if that user has any remaining turn
+            if(numTurnClient[run_client_id] > 0){
+                // decrease turn of that user by one and move to
+                // next player (still using the old question id)
+                numTurnClient[run_client_id] -= 1;
+                respond = "skip";
+                send(clien_socket[run_client_id], respond, strlen(respond), 0);
+                
+                run_client_id = (run_client_id+1)%max_num_client;
+
+                // send feed back
+                
+            }
+        }
+        else if (clientAnswer[0] == selectedQues.answer){
+            // client's answer is correct 
+            run_question_id += 1;
+            respond = "correct";
+            total_ques -= 1;
+            //send feedback
+            send(clien_socket[run_client_id], respond, strlen(respond), 0);
+        }
+        else{
+            // client's answer is incorrect
+            respond = "incorrect";
+            isAlive[run_client_id] = false; 
+            num_alive -= 1;
+            send(clien_socket[run_client_id], respond, strlen(respond), 0);
+            close(clien_socket[run_client_id]);
+
+            while(isAlive[run_client_id]==false){
+                run_client_id = (run_client_id+1)%max_num_client;
+            }
+        }
+        cout<<"On checking the answer"<<endl;
+        // send response to client's answer
+        // repeats
+        // waiting to confirm that client have receive response
+        // n = read(clien_socket[run_client_id], buffer, 255);
+        sleep(1);
+        cout<<respond<<endl;
+    }
+    for(int i=0; i<max_num_client; i++)
+    {
+        if(isAlive[i]){
+            respond = "end game";
+            send(clien_socket[i], respond, strlen(respond), 0);
+            close(clien_socket[i]);
+        }
+    }
+    cout<<"Congratulations "<<client_name[run_client_id]<<" on winning this game!!!"<<endl;
     return 0;   
 }   
     
