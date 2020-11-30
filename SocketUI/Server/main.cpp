@@ -1,5 +1,5 @@
 /* The port number is passed as an argument */
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
@@ -11,7 +11,10 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h>*/
+
+/* ui lib*/
+#include "mainwindow.h"
 
 using namespace std;
 
@@ -20,117 +23,29 @@ struct Question{
     char answer;
 };
 
-void error(const char *msg)
-{
-    perror(msg);
-    exit(1);
-}
-bool checkExistPlayer(set<char *> list_player, char *check_name){
-    set< char * >::iterator it;
-    bool exist = false;
-    for (it=list_player.begin(); it!=list_player.end(); ++it)
-    {
-        if(strcmp(*it, check_name)==0) { exist = true; break;}
-    }
-    return exist;
-}
 
 vector<Question> getListQuestion(){
     vector<Question> myQues;
     return myQues;
 }
 
+
 int main(int argc, char *argv[])
 {
-    int opt = 1;
-    int sockfd, newsockfd, portno, newsockfd2, master_socket, 
-        max_sd, sd, activity, new_socket, addrlen, valread;
-    socklen_t clilen;
-    char buffer[256];
-    struct sockaddr_in serv_addr, cli_addr;
-    int n;
+    // UI code
+    QApplication app(argc, argv);
+    MainWindow mainWindow;
+    mainWindow.showMaximized();
+    mainWindow.setFixedSize(500,500);
+    mainWindow.setStyleSheet("background-color: white;");
+    //mainWindow.printConsole("");
+    //
 
-    fd_set readfds;
-
-    if (argc < 2) {
-        fprintf(stderr,"ERROR, no port provided\n");
-        exit(1);
-    }
-    // create a socket
-    // socket(int domain, int type, int protocol)
-
-    //create master socket
-    if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)   
-    {   
-        perror("socket failed");   
-        exit(EXIT_FAILURE);   
-    }
-
-    // set sock option
-    if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,  
-          sizeof(opt)) < 0 )   
-        {   
-            perror("setsockopt");   
-            exit(EXIT_FAILURE);   
-        }   
-    //  sockfd =  socket(AF_INET, SOCK_STREAM, 0);
-    //  if (sockfd < 0) 
-    //     error("ERROR opening socket");
+    return app.exec();
 
     
-     // clear address structure
-     bzero((char *) &serv_addr, sizeof(serv_addr));
-
-     //portno = atoi(argv[1]);
-
-    portno = 20;
-
-
-     cout << portno << endl;
-
-     /* setup the host_addr structure for use in bind call */
-     // server byte order
-     serv_addr.sin_family = AF_INET;  
-
-     // automatically be filled with current host's IP address
-     serv_addr.sin_addr.s_addr = INADDR_ANY;  
-
-     // convert short integer value for port must be converted into network byte order
-     serv_addr.sin_port = htons(portno);
-
-     // This bind() call will bind  the socket to the current IP address on port, portno
-    //  if (bind(sockfd, (struct sockaddr *) &serv_addr,
-    //           sizeof(serv_addr)) < 0) 
-    //           error("ERROR on binding");
-    if (bind(master_socket, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
-
-    // set number of pending connection
-    if (listen(master_socket, 3) < 0)   
-    {   
-        perror("listen");   
-        exit(EXIT_FAILURE);   
-    } 
-    //Nhap so luong client
-    int max_num_client;
-    int cur_num_client=0;
-    printf("Enter number of player: ");
-    scanf("%d", &max_num_client);
-	printf("Waiting for players to register\n");
+    /*
     
-    set<char *> list_player; // init list of players nickname
-    int * clien_socket = new int[max_num_client]; // init list of players socket
-    string * client_name = new string[max_num_client];
-    // init all socket to 0
-    for(int i=0; i<max_num_client; i++){
-        clien_socket[i] = 0;
-    }
-    addrlen = sizeof(serv_addr); 
-    char *message = "ECHO Daemon v1.0 \r\n";
-    bool exist;
-    // Waiting for players to register
-    int num_client_to_start = 0;
     while(true)   
     {   
         //clear the socket set  
@@ -388,7 +303,8 @@ int main(int argc, char *argv[])
         }
     }
     cout<<"Congratulations "<<client_name[run_client_id]<<" on winning this game!!!"<<endl;
-    return 0;   
+
+    return app.exec();*/
 }   
     
     
