@@ -29,6 +29,69 @@ bool checkExistPlayer(set<char *> list_player, char *check_name){
     return exist;
 }
 
+int randomQuestionNo(int min, int max) //range : [min, max]
+{
+    static bool first = true;
+    if (first) 
+    {  
+        srand( time(NULL) ); //seeding for the first time only!
+        first = false;
+    }
+    return min + rand() % (( max + 1 ) - min);
+}
+// for string delimiter
+vector<string> split (string s, string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    string token;
+    vector<string> res;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
+}
+
+vector<Question> getQuestion (){
+
+    std::ifstream inFile;
+    inFile.open("/Users/nguyentri/Desktop/FullSocketProject/Server/data.txt");
+    std::stringstream strStream;
+    strStream << inFile.rdbuf();
+    string str = strStream.str();
+
+    string delimiter = "===";
+    vector<string> v = split (str, delimiter);
+
+    vector<int> quesIdx;
+    vector<Question> SetQues;
+    for (int i = 1; i <= 10; i++){
+        int quesNo = randomQuestionNo(0,v.size());
+
+        while (std::count(quesIdx.begin(), quesIdx.end(), quesNo))
+        {
+            int quesNo = randomQuestionNo(0,v.size());
+        }
+
+        quesIdx.push_back(quesNo);
+
+        vector<string> quesSet = split (v[quesNo], "\n");
+        vector<string> subvector = quesSet; // = {quesSet.begin() + 1, quesSet.end() - 1};
+
+        Question Q = {
+            subvector[1],
+            {subvector[5],subvector[2],subvector[3],subvector[4]},
+            subvector[6][0]
+        };
+
+        SetQues.push_back(Q);
+    }
+    return SetQues;
+}
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
@@ -39,31 +102,67 @@ MainWindow::MainWindow(QWidget *parent)
   console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
   console_view->setDisabled(true);
 
+  player_number_view = new QTextEdit("Enter number of players: ",this);
+  player_number_view->setGeometry(QRect(QPoint(20, 130), QSize(180, 20)));
+  player_number_view->setDisabled(true);
+  player_number_view->setFrameStyle(QFrame::NoFrame);
+
   player_number = new QTextEdit("",this);
-  player_number->setGeometry(QRect(QPoint(40, 130), QSize(50, 20)));
+  player_number->setGeometry(QRect(QPoint(180, 130), QSize(50, 20)));
+
+  question_title = new QTextEdit("Question:",this); 
+  question_title->setGeometry(QRect(QPoint(20, 150), QSize(180, 20)));
+  question_title->setDisabled(true);
+  question_title->setFrameStyle(QFrame::NoFrame);
+  
 
   question_view = new QTextEdit("",this);
-  question_view->setGeometry(QRect(QPoint(20, 160), QSize(450, 50)));
+  question_view->setGeometry(QRect(QPoint(20, 180), QSize(450, 50)));
   question_view->setDisabled(true);
 
+  right_answer_title = new QTextEdit("Right answer",this);
+  right_answer_title->setGeometry(QRect(QPoint(200, 285), QSize(180, 20)));
+  right_answer_title->setDisabled(true);
+  right_answer_title->setFrameStyle(QFrame::NoFrame);
+
   true_answer = new QTextEdit("",this);
-  true_answer->setGeometry(QRect(QPoint(200, 220), QSize(100, 30)));
+  true_answer->setGeometry(QRect(QPoint(200, 305), QSize(100, 30)));
   true_answer->setDisabled(true);
 
+  a_title = new QTextEdit("A",this);
+  a_title->setGeometry(QRect(QPoint(20, 250), QSize(180, 20)));
+  a_title->setDisabled(true);
+  a_title->setFrameStyle(QFrame::NoFrame);
+
   A_answer = new QTextEdit("",this);
-  A_answer->setGeometry(QRect(QPoint(20, 260), QSize(120, 40)));
+  A_answer->setGeometry(QRect(QPoint(20, 270), QSize(120, 40)));
   A_answer->setDisabled(true);
 
+  b_title = new QTextEdit("B",this);
+  b_title->setGeometry(QRect(QPoint(350, 250), QSize(180, 20)));
+  b_title->setDisabled(true);
+  b_title->setFrameStyle(QFrame::NoFrame);
+
   B_answer = new QTextEdit("",this);
-  B_answer->setGeometry(QRect(QPoint(350, 260), QSize(120, 40)));
+  B_answer->setGeometry(QRect(QPoint(350, 270), QSize(120, 40)));
   B_answer->setDisabled(true);
 
+  c_title = new QTextEdit("C",this);
+  c_title->setGeometry(QRect(QPoint(20, 320), QSize(180, 20)));
+  c_title->setDisabled(true);
+  c_title->setFrameStyle(QFrame::NoFrame);
+
   C_answer = new QTextEdit("",this);
-  C_answer->setGeometry(QRect(QPoint(20, 320), QSize(120, 40)));
+  C_answer->setGeometry(QRect(QPoint(20, 340), QSize(120, 40)));
   C_answer->setDisabled(true);
 
+  d_title = new QTextEdit("D",this);
+  d_title->setGeometry(QRect(QPoint(350, 320), QSize(180, 20)));
+  d_title->setDisabled(true);
+  d_title->setFrameStyle(QFrame::NoFrame);
+
   D_answer = new QTextEdit("",this);
-  D_answer->setGeometry(QRect(QPoint(350, 320), QSize(120, 40)));
+  D_answer->setGeometry(QRect(QPoint(350, 340), QSize(120, 40)));
   D_answer->setDisabled(true);
 
   listen_button = new QPushButton("Listen", this);
@@ -343,13 +442,13 @@ void MainWindow::handleListen() {
     bool isEndGame = false;
     char *clientAnswer = (char*) malloc(strlen(buffer)+1);
     char *respond;
-    vector<Question> allQues;
+    vector<Question> allQues = getQuestion();
     Question selectedQues;
 
     qApp->processEvents();  
     
     // /// insert demo question here
-    Question tmp;
+    /*Question tmp;
     char random_answer[4] = {'A', 'B', 'C', 'D'};
     for(int i = 0; i<max_num_client*3; i++){
         tmp.question = "question "+ to_string(i+1);
@@ -359,7 +458,7 @@ void MainWindow::handleListen() {
         tmp.answerSentence[3] = "this is senDff";
         tmp.answer = random_answer[i%4];
         allQues.push_back(tmp);
-    }
+    }*/
 
     qApp->processEvents();  
     // Question ques1;

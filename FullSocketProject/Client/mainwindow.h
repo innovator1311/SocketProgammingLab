@@ -52,6 +52,7 @@ private:
   char answer = 'S';
   QPushButton *a_button, *b_button, *c_button, *d_button, *listen_button, *skip_answer;
   QTextEdit *console_view, *player_name, *player_number, *question_view, *A_answer, *B_answer, *C_answer, *D_answer, *timer_view;
+  QTextEdit *name_title, *time_title, *question_title;
 };
 
 

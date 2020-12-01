@@ -20,6 +20,14 @@
 #include <vector>
 #include <string>
 
+#include <sstream>
+#include <fstream>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include<time.h>
+#include <algorithm>
+
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -46,6 +54,7 @@ private:
   bool listenning = false;
   QPushButton *a_button, *b_button, *c_button, *d_button, *listen_button;
   QTextEdit *console_view, *player_number, *question_view, *A_answer, *B_answer, *C_answer, *D_answer, *true_answer;
+  QTextEdit *player_number_view, *question_title, *a_title, *b_title, *c_title, *d_title, *right_answer_title;
 };
 
 

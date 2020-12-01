@@ -62,21 +62,38 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
   console_view = new QTextEdit("",this);
-  console_view->setGeometry(QRect(QPoint(20, 20), QSize(380, 100)));
+  console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
   console_view->setDisabled(true);
 
+  name_title = new QTextEdit("Enter your name: ",this);
+  name_title->setGeometry(QRect(QPoint(20, 130), QSize(180, 20)));
+  name_title->setDisabled(true);
+  name_title->setFrameStyle(QFrame::NoFrame);
+
   player_name = new QTextEdit("",this);
-  player_name->setGeometry(QRect(QPoint(420, 20), QSize(50, 50)));
+  player_name->setGeometry(QRect(QPoint(150, 130), QSize(70, 20)));
+
+  time_title = new QTextEdit("Remaining time",this);
+  time_title->setGeometry(QRect(QPoint(200, 280), QSize(200, 30)));
+  time_title->setDisabled(true);
+  time_title->setFrameStyle(QFrame::NoFrame);
+
 
   timer_view = new QTextEdit("",this);
-  timer_view->setGeometry(QRect(QPoint(40, 130), QSize(50, 20)));
-
-  question_view = new QTextEdit("",this);
-  question_view->setGeometry(QRect(QPoint(20, 160), QSize(450, 50)));
-  question_view->setDisabled(true);
+  timer_view->setGeometry(QRect(QPoint(200, 315), QSize(100, 30)));
+  timer_view->setDisabled(true);
 
   skip_answer = new QPushButton("Skip",this);
-  skip_answer->setGeometry(QRect(QPoint(200, 220), QSize(100, 30)));
+  skip_answer->setGeometry(QRect(QPoint(200, 400), QSize(100, 30)));
+
+  question_title = new QTextEdit("Question:",this); 
+  question_title->setGeometry(QRect(QPoint(20, 150), QSize(180, 20)));
+  question_title->setDisabled(true);
+  question_title->setFrameStyle(QFrame::NoFrame);
+
+  question_view = new QTextEdit("",this);
+  question_view->setGeometry(QRect(QPoint(20, 180), QSize(450, 50)));
+  question_view->setDisabled(true);
 
   A_answer = new QTextEdit("",this);
   A_answer->setGeometry(QRect(QPoint(20, 260), QSize(120, 40)));
