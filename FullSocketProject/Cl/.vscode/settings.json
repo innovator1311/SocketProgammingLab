@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "set": "cpp",
+        "ostream": "cpp",
+        "iosfwd": "cpp",
+        "bitset": "cpp",
+        "array": "cpp",
+        "iterator": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp",
+        "ranges": "cpp",
+        "system_error": "cpp",
+        "istream": "cpp",
+        "*.tcc": "cpp"
+    }
+}
