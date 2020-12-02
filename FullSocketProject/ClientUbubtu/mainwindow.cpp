@@ -63,8 +63,12 @@ MainWindow::MainWindow(QWidget *parent)
   //qApp->setStyleSheet("color: red");
 
   console_view = new QTextEdit("Welcome to the game !!\nEnter username to join the game.",this);
-  console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
+  console_view->setGeometry(QRect(QPoint(20, 20), QSize(280, 100)));
   console_view->setDisabled(true);
+
+  general_info = new QTextEdit("",this);
+  general_info->setGeometry(QRect(QPoint(300, 20), QSize(170, 100)));
+  general_info->setDisabled(true);
 
   name_title = new QTextEdit("Enter your name: ",this);
   name_title->setGeometry(QRect(QPoint(20, 130), QSize(180, 20)));
@@ -186,6 +190,7 @@ void MainWindow::handleListen() {
     qApp->processEvents();  
     qApp->processEvents();  
 
+
     bzero(buffer,256);
 
     n = read(sockfd, buffer, 256);
@@ -215,9 +220,30 @@ void MainWindow::handleListen() {
 
     //cout<<"Welcome player "<<buffer<<" to join the game"<<endl;
     //cout<<"Please wait for other players"<<endl;
-    char message[256];
+
+    string welcome = "Welcome player " + text1 + " to join the game.\nPlease wait for other players.";
+    console_view->setText(QString::fromStdString(welcome));
+
+    qApp->processEvents();  
+    qApp->processEvents();  
+
+
+    char message[1024];
     char answers[4][256];
     string realMessage;
+
+    bzero(message, 1024);
+
+    n = read(sockfd, message, 1024);
+    cout << "real message " << message << endl;
+    general_info->setText(QString::fromStdString(string(message)));
+
+    /*while(true){
+        
+        realMessage = convertMes(message);
+        if(realMessage == "start game")
+            break;
+    }*/
 
     qApp->processEvents();  
     qApp->processEvents();  

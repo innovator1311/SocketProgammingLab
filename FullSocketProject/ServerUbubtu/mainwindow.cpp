@@ -439,6 +439,27 @@ void MainWindow::handleListen() {
     qApp->processEvents();  
     qApp->processEvents(); 
 
+    
+
+    char new_message[1024];
+
+
+    for(int i=0; i<max_num_client; i++){
+        cout<<i+1<<"."<<client_name[i]<<endl;
+        // signal the player to start game, must wait until the client confirm 
+
+        string true_message = "Three are " + to_string(max_num_client) + " players.\nYou are player number " + to_string(i + 1) + ".\nThere are " + to_string(3 * max_num_client) + " questions\n."; 
+        strcpy(new_message, true_message.c_str());
+
+        cout << "message " << new_message << endl;
+
+        new_message[true_message.size()] = '\0';
+
+        send(clien_socket[i], new_message, 1024, 0);
+        //n = read(clien_socket[i], buffer, 255);
+        cout<<"Response from player "<<buffer<<endl;
+    }
+
     // init game properties from server
     int run_client_id = 0;
     int run_question_id = 0;
@@ -639,4 +660,6 @@ void MainWindow::handleListen() {
 
     string full_final = "Congratulations " + client_name[run_client_id] + " on winning this game!!!";
     console_view->setText(QString::fromStdString(full_final));
+
+    listenning = false;
 }

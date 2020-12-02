@@ -53,7 +53,7 @@ private:
   bool pressed = false;
   char answer = 'S';
   QPushButton *a_button, *b_button, *c_button, *d_button, *listen_button, *skip_answer;
-  QTextEdit *console_view, *question_view, *A_answer, *B_answer, *C_answer, *D_answer, *timer_view;
+  QTextEdit *console_view, *general_info, *question_view, *A_answer, *B_answer, *C_answer, *D_answer, *timer_view;
   QTextEdit *name_title, *time_title;
   QLineEdit *player_name, *question_title;
 };
