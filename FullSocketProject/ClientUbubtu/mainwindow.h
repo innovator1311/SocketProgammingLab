@@ -11,7 +11,8 @@
 #include <QDebug>
 #include <QObject>
 #include <QLineEdit>
-
+#include <QFont>
+#include <QBrush>
 
 #include <stdio.h>
 #include <stdlib.h>

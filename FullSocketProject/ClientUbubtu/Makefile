@@ -584,6 +584,8 @@ moc_mainwindow.cpp: /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QApplication \
 		/usr/include/x86_64-linux-gnu/qt5/QtCore/QDebug \
 		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
 		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QFont \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QBrush \
 		mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -841,7 +843,9 @@ main.o: main.cpp mainwindow.h \
 		/usr/include/x86_64-linux-gnu/qt5/QtCore/qtcoreversion.h \
 		/usr/include/x86_64-linux-gnu/qt5/QtCore/QDebug \
 		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
-		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h
+		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QFont \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QBrush
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1082,7 +1086,9 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/include/x86_64-linux-gnu/qt5/QtCore/qtcoreversion.h \
 		/usr/include/x86_64-linux-gnu/qt5/QtCore/QDebug \
 		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
-		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h
+		/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QFont \
+		/usr/include/x86_64-linux-gnu/qt5/QtGui/QBrush
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

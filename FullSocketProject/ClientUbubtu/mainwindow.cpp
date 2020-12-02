@@ -60,8 +60,9 @@ string convertMes(const char *messageSer){
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
+  //qApp->setStyleSheet("color: red");
 
-  console_view = new QTextEdit("",this);
+  console_view = new QTextEdit("Welcome to the game !!\nEnter username to join the game.",this);
   console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
   console_view->setDisabled(true);
 
@@ -136,6 +137,13 @@ MainWindow::MainWindow(QWidget *parent)
  
 void MainWindow::handleListen() {
 
+    QString text = player_name->text();
+
+    if (text.isEmpty()) {
+        console_view->setText("Please enter your username\n");
+        return;
+    }
+
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -164,7 +172,7 @@ void MainWindow::handleListen() {
     
     bzero(buffer,256);
 
-    QString text = player_name->text();
+    
     string text1 = text.toStdString();
     strcpy(buffer, text1.c_str());
 
@@ -195,8 +203,8 @@ void MainWindow::handleListen() {
         qApp->processEvents();
 
         // received zero bytes means to be failed 
-        console_view->setText("Your nickname is not valid or has exist, re-enter your nickname pls\n");
-        console_view->setText("Enter your nickname again: ");
+        console_view->setText("Your nickname is not valid or has exist, re-enter your nickname and connect again pls\n");
+        //console_view->setText("Enter your nickname again: ");
 
         ::close(sockfd);
         return;
@@ -205,8 +213,8 @@ void MainWindow::handleListen() {
     qApp->processEvents();  
     qApp->processEvents();  
 
-    cout<<"Welcome player "<<buffer<<" to join the game"<<endl;
-    cout<<"Please wait for other players"<<endl;
+    //cout<<"Welcome player "<<buffer<<" to join the game"<<endl;
+    //cout<<"Please wait for other players"<<endl;
     char message[256];
     char answers[4][256];
     string realMessage;
@@ -256,7 +264,7 @@ void MainWindow::handleListen() {
         qApp->processEvents();  
         qApp->processEvents();
 
-        console_view->setText("Waiting for your turn!");
+        console_view->setText("Welcome to the game !!\nPlease wait for your turn!");
 
         qApp->processEvents();  
         qApp->processEvents();
@@ -290,7 +298,7 @@ void MainWindow::handleListen() {
         qApp->processEvents();  
         qApp->processEvents();
 
-        console_view->setText("Your turn now!!Press A,B,C,D for answering or Skip for skipping");
+        console_view->setText("Your turn now!!\nPress A,B,C,D for answering or Skip for skipping\nYou can only skip once.");
         question_view->setText(QString::fromStdString(string(message)));
         A_answer->setText(QString::fromStdString(string(answers[0])));
         B_answer->setText(QString::fromStdString(string(answers[1])));
@@ -438,6 +446,6 @@ void MainWindow::handleSkipButton() {
         answer = 'S';
     }
     else {
-        console_view->setText("You have no skip option, please answer");
+        console_view->setText("You have no skip option, please press A,B,C,D for answering");
     }
 }

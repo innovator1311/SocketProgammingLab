@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
     // UI code
     QApplication app(argc, argv);
+    
     MainWindow mainWindow;
     mainWindow.setWindowTitle("WHO WANTS TO BE A MILLIONAIRE ?");
     mainWindow.show();
