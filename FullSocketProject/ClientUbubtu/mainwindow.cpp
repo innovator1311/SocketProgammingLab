@@ -147,6 +147,7 @@ void MainWindow::reset() {
     B_answer->setText("");
     C_answer->setText("");
     D_answer->setText("");
+    outOfSkipTurn=false;
 }
  
 void MainWindow::handleListen() {
