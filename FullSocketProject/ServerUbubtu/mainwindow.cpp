@@ -99,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
  
-  console_view = new QTextEdit("",this);
+  console_view = new QTextEdit("Welcome to the game !!\nPress listen to start hosting the game.",this);
   console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
   console_view->setDisabled(true);
 
