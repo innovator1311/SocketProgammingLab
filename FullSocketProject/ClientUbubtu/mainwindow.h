@@ -46,6 +46,7 @@ private slots:
   void handleDButton();
   void handleSkipButton();
   void handleListen();
+  void reset();
   
 
 private:

@@ -50,6 +50,7 @@ public:
   explicit MainWindow(QWidget *parent = nullptr);
   
 private slots:
+  void reset();
   void handleListen();
   
 private:

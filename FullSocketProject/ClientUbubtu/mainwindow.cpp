@@ -138,8 +138,20 @@ MainWindow::MainWindow(QWidget *parent)
   connect(d_button, &QPushButton::released, this, &MainWindow::handleDButton);
   connect(skip_answer, &QPushButton::released, this, &MainWindow::handleSkipButton);
 }
+
+void MainWindow::reset() {
+    question_view->setText("");
+    timer_view->setText("");
+    general_info->setText("");
+    A_answer->setText("");
+    B_answer->setText("");
+    C_answer->setText("");
+    D_answer->setText("");
+}
  
 void MainWindow::handleListen() {
+
+    reset();
 
     QString text = player_name->text();
 
@@ -431,6 +443,9 @@ void MainWindow::handleListen() {
             break;
         }
     }
+
+    reset();
+
     if(isWinning==1){
         console_view->setText("Congratulations!!! You are the winner");
     }

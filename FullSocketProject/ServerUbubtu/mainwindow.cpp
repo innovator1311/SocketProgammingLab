@@ -173,7 +173,18 @@ MainWindow::MainWindow(QWidget *parent)
   connect(listen_button, &QPushButton::released, this, &MainWindow::handleListen);
 }
 
+void MainWindow::reset() {
+    question_view->setText("");
+    true_answer->setText("");
+    A_answer->setText("");
+    B_answer->setText("");
+    C_answer->setText("");
+    D_answer->setText("");
+}
+
 void MainWindow::handleListen() {
+
+    reset();
 
     if (listenning) return;
     listenning = true;
@@ -658,8 +669,11 @@ void MainWindow::handleListen() {
         }
     }
 
+    reset();
+
     string full_final = "Congratulations " + client_name[run_client_id] + " on winning this game!!!";
     console_view->setText(QString::fromStdString(full_final));
 
+    ::close(master_socket);
     listenning = false;
 }
