@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     mainWindow.setWindowTitle("WHO WANTS TO BE A MILLIONAIRE ?");
     mainWindow.show();
     mainWindow.setFixedSize(500,500);
-    mainWindow.setStyleSheet("background-color: white;");
+    mainWindow.setStyleSheet("background-color: white; color: black");
     
     return app.exec();
 }

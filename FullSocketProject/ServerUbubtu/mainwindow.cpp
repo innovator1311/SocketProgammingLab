@@ -102,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
   console_view = new QTextEdit("Welcome to the game !!\nPress listen to start hosting the game.",this);
   console_view->setGeometry(QRect(QPoint(20, 20), QSize(450, 100)));
   console_view->setDisabled(true);
+  console_view->setStyleSheet("QLineEdit { border: none; color: black}");
 
   player_number_view = new QLineEdit("Enter number of players: ",this);
   player_number_view->setGeometry(QRect(QPoint(20, 130), QSize(180, 20)));

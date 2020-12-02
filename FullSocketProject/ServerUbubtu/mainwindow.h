@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QObject>
 #include <QLineEdit>
+#include <QLabel>
 
 
 #include <stdio.h>
